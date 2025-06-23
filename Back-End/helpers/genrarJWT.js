@@ -1,13 +1,11 @@
 import jwt from "jsonwebtoken"
 
 const generarJWT = (informacion, expirado) => {
-    const token = jwt.sign(
-        informacion,
-        process.env.JWT_SECRET,
-        expirado
-      );
+    const tokenJWT = jwt.sign(informacion, process.env.JWT_SECRET, {
+      expiresIn: expirado,
+    });
 
-    return token
+    return tokenJWT;
 }
 
 export default generarJWT;
