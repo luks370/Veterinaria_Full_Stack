@@ -89,4 +89,18 @@ const autenticar = async (req, res) => {
 
 // PRIVADO
 
-export { obtenerVeterinarios, registrar, confirmar, autenticar };
+const obtenerPerfil = async (req, res) => {
+  const veterinario = await veterinariosTabla.findByPk(req.veterinario.id, {
+    attributes: {
+      exclude: ["password", "token", "confirmado"],
+    },
+  });
+
+  if (!veterinario) {
+    return res.status(404).json({ msj: "Error al obtener perfil" });
+  }
+
+  res.status(200).json(veterinario);
+};
+
+export { obtenerVeterinarios, registrar, confirmar, autenticar, obtenerPerfil };
