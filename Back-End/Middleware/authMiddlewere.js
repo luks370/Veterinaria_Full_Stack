@@ -14,11 +14,12 @@ const auth = async (req, res, next) => {
         const decoded = await jwt.verify(tokenJWT, process.env.JWT_SECRET);
 
         req.veterinario = decoded
+        
+        next();
     } catch (error) {
         console.log(error)
     }
 
-    next();
 }
 
 export default auth

@@ -13,7 +13,7 @@ const obtenerVeterinarios = async (req, res) => {
   }
 };
 
-// PUBLICO
+// AREA PUBLICA
 const registrar = async (req, res) => {
   const { nombre, email, password, telefono, web } = req.body;
 
@@ -87,8 +87,65 @@ const autenticar = async (req, res) => {
   }
 };
 
-// PRIVADO
+const olvidePassword = async (req, res) => {
+  const {email} = req.body;
 
+  try {
+    const veterinario = await veterinariosTabla.findOne({where: {email}})
+
+    if(!veterinario){
+      return res.status(404).json({msj: "No existe usuario"})
+    }
+
+    veterinario.token = await generarToken();
+    veterinario.save()
+
+    res.status(200).json({msj: `Token: ${veterinario.token}`})
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const comprobarToken = async (req, res) => {
+  const {token} = req.params;
+
+  try {
+    const veterinario = await veterinariosTabla.findOne({where: {token}})
+
+    if(!veterinario){
+      return res.status(404).json({msj: "No existe usuario con ese token"})
+    }
+
+    return res.status(200).json({msj: "Token confirmado"})
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const nuevoPassword = async (req, res) => {
+  const {token} = req.params;
+  const {password} = req.body;
+
+  try {
+    const veterinario = await veterinariosTabla.findOne({where: {token}})
+
+    if(!veterinario){
+      return res.status(404).json({msj: "No existe usuario"})
+    }
+
+    veterinario.password = password;
+    veterinario.token = null;
+    await veterinario.save();
+
+    return res.status(200).json(veterinario)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+
+// AREA PRIVADA
 const obtenerPerfil = async (req, res) => {
   const veterinario = await veterinariosTabla.findByPk(req.veterinario.id, {
     attributes: {
@@ -103,4 +160,4 @@ const obtenerPerfil = async (req, res) => {
   res.status(200).json(veterinario);
 };
 
-export { obtenerVeterinarios, registrar, confirmar, autenticar, obtenerPerfil };
+export { obtenerVeterinarios, registrar, confirmar, autenticar, olvidePassword, comprobarToken, nuevoPassword, obtenerPerfil };
