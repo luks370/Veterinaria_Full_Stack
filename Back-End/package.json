@@ -1,0 +1,21 @@
+{
+  "name": "apv-back-end",
+  "version": "1.0.0",
+  "description": "aplicacion para veterinarios",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "author": "Lucas Eduardo Ovejero",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.14.1",
+    "nodemon": "^3.1.10",
+    "sequelize": "^6.37.7"
+  }
+}
