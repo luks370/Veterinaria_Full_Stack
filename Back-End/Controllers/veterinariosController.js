@@ -15,13 +15,37 @@ const obtenerVeterinarios = async (req, res) => {
 }
 
 const registrar = async (req, res) => {
-  const { nombre, email, password, telefono, web } = req.body;
+  const { nombre, email, password, repitePassword, telefono, web } = req.body;
+
+  const incompleto = [
+    nombre,
+    email,
+    password,
+    repitePassword,
+    telefono,
+    web,
+  ].includes("");
+
+  if (incompleto) {
+    return res.status(400).json({ msj: "Campos incompletos" });
+    return;
+  }
+
+  if (password != repitePassword) {
+    return res.status(400).json({ msj: "Passwords Diferentes" });
+    return;
+  }
+
+  if (password.length < 8) {
+    return res.status(400).json({ msj: "Password de 8 caracteres o mas" });
+    return;
+  }
 
   try {
     const existe = await veterinariosTabla.findOne({ where: { email } });
 
     if (existe) {
-      return res.json({ msj: "Ya existe una cuenta registrada con ese mail." });
+      return res.status(401).json({ msj: "Ya existe registrado ese mail" });
     }
 
     const veterinario = await veterinariosTabla.create({
@@ -33,11 +57,8 @@ const registrar = async (req, res) => {
       token: generarToken(),
     });
 
-    res
-      .status(201)
-      .json({
-        msj: `Veterinario agregado correctamente. Token: ${veterinario.token}`,
-      });
+    res.status(200).json({ msj: "Veterinario Agregado" });
+
   } catch (error) {
     console.log(error);
   }
